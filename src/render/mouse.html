@@ -1,0 +1,43 @@
+<script src="https://cdn.bootcdn.net/ajax/libs/vue/3.2.33/vue.global.js"></script>
+
+<div id="app"></div>
+
+<script>
+    const { createApp, ref, onMounted, onUnmounted } = Vue
+
+    function useMouse() {
+        const x = ref(0)
+        const y = ref(0)
+
+        const update = e => {
+            this.x = e.pageX
+            this.y = e.pageY
+        }
+
+        onMounted(() => {
+            window.addEventListener('mousemove', update)
+        })
+
+        onUnmounted(() => {
+            window.removeEventListener('mousemove', update)
+        })
+
+        return { x, y }
+    }
+
+    const App = {
+        template: `{{x}} {{y}}`,
+        setup() {
+            const { x, y } = useMouse()
+            // const { x: z } = useOtherFeature() //通过重命名有效防止命名冲突
+
+            return {
+                x,
+                y
+                //  z
+            }
+        }
+    }
+
+    createApp(App).mount('#app')
+</script>

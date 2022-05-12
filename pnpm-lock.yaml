@@ -1,0 +1,13 @@
+lockfileVersion: 5.4
+
+specifiers:
+  '@vue/shared': ^3.2.33
+
+dependencies:
+  '@vue/shared': 3.2.33
+
+packages:
+
+  /@vue/shared/3.2.33:
+    resolution: {integrity: sha512-UBc1Pg1T3yZ97vsA2ueER0F6GbJebLHYlEi4ou1H5YL4KWvMOOWwpYo9/QpWq93wxKG6Wo13IY74Hcn/f7c7Bg==}
+    dev: false

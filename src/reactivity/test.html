@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Document</title>
+    </head>
+    <body>
+        <div id="container">
+            <div id="app1"></div>
+            <div id="app2"></div>
+        </div>
+    </body>
+</html>
+
+<script>
+    const $app1 = document.querySelector('#app1')
+    const $app2 = document.querySelector('#app2')
+
+    const bucket = new Set()
+
+    let activeEffect
+    // 变化点：
+    // 通过effect函数来主动收集依赖
+    const effect = function (fn) {
+        // 每执行一次，将当前fn赋值给activeEffect,这样在fn中触发读取操作时，就可以被收集进bucket中了
+        activeEffect = fn
+        // 主动执行一次很重要，必不可少
+        fn()
+    }
+    
+    const state = new Proxy(
+        { text: 'hello fatfish', text2: 'hello fatfish2' },
+        {
+            get(target, key) {
+                const value = target[key]
+                // 变化点：由版本1的effect变成了activeEffect,从而不再依赖具体的函数名字
+                bucket.add(activeEffect)
+                console.log(`get ${key}: ${value}`)
+                return value
+            },
+            set(target, key, newValue) {
+                console.log(`set ${key}: ${newValue}`)
+
+                target[key] = newValue
+                bucket.forEach(fn => fn())
+            }
+        }
+    )
+
+    effect(function effect1() {
+        console.log('执行了effect1')
+        $app1.innerText = state.text
+    })
+
+    effect(function effect2() {
+        console.log('执行了effect2')
+        $app2.innerText = state.text2
+    })
+
+    setTimeout(() => {
+        state.text = 'hello Vue3'
+        state.text2 = 'hello Vue3-2'
+    }, 1000)
+</script>
